@@ -5,8 +5,6 @@ description: "解説文を出力する前に、読み手 → 診断 → 書き�
 
 # Explainer Review — 出力前の読み手レビュー
 
-<!-- 自動生成。直接編集しない -->
-
 解説文を出す前に、**3つの役を順に演じて**、読み手が止まる箇所を潰してから出す。
 文章の書き方そのものは `explainer-style`・`explainer-citation`・`explainer-structure` が定義する。この Skill は **書き終えた後の検査と書き直しの手続き**だけを定義する。
 

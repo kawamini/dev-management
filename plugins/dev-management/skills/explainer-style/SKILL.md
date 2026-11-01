@@ -3,8 +3,6 @@ name: explainer-style
 description: "技術解説の「文章スタイル」を定義する基礎Skill。論文・技術概念・実装・手順・数式について1段落以上の解説的な文章を書くとき、および出力に対する指摘・質問に対応するときは必ず発動する。前提知識の補完、論理の流れの明示、平易な言い換え、英語用語の和訳併記、合成語の分解、コード解説の粒度、指摘への対応手続き（認識合わせと本文の書き直し）、出力前セルフチェックを定義する。発動しない場合＝訳語1つ・数値1つで済む単発の事実確認、雑談、ファイル操作のみの依頼。Also triggers on English requests: explain this paper, how does X work, walk me through, why is this unclear."
 ---
 
-<!-- 自動生成。直接編集しない -->
-
 # Explainer — 文章スタイル
 
 技術解説の「**どう書くか**」の文章スタイル原則を定義する Skill。

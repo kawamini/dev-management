@@ -3,8 +3,6 @@ name: explainer-citation
 description: 技術解説における「出典明示」「一次情報の事前確認」「リンク密度」「用語の正確性」「推測の排除」を定義するSkill。論文・公式ドキュメント・技術仕様・コードベースなど一次情報を根拠として解説を書くときは必ず発動する（論文閲読、公式ガイド解説、API仕様の説明、数値・仕様への言及を含む）。一次情報を直接確認せずに推定で章名・節構造を書くこと、推測で空白を埋めることを禁止する。発動しない場合＝一次情報を参照しない一般的な概念説明、雑談。Also triggers on English requests: cite the source, according to the paper, official docs, what section says this.
 ---
 
-<!-- 自動生成。直接編集しない -->
-
 # Explainer — 出典
 
 技術解説における **「出典・一次情報・リンク」** の規範を定義する Skill。

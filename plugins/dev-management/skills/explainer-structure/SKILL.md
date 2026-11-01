@@ -3,8 +3,6 @@ name: explainer-structure
 description: "開発知識のインプット用ドキュメントの「構造設計」を定義するSkill。粒度の判断（詳細型／俯瞰型）と冒頭の宣言、出力の形（既定は1ファイル、分けても3つまで）、章立てと必須セクション、ファイル名の規約、概念図を独立した HTML ファイルとして作る手続きと命名・引用の規約を扱う。ドキュメントをファイルとして出力するとき、図を含む解説を書くとき、複数トピックを1本にまとめるときは必ず発動する。発動しない場合＝チャット内の文章だけで完結する短い回答、ファイルを作らない応答。Also triggers on English requests: write it to a file, split into files, draw a diagram, how should I structure this doc."
 ---
 
-<!-- 自動生成。直接編集しない -->
-
 # Explainer Structure
 
 ドキュメントの **「どう配置するか」「どう分割するか」「図をどう出すか」** を定義する Skill。
