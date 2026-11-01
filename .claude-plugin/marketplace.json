@@ -1,0 +1,14 @@
+{
+  "name": "dev-management",
+  "description": "AI エージェントと進める開発・研究の管理ルールと、解説文書の書き方の Skill 集",
+  "owner": {
+    "name": "dev-management maintainers"
+  },
+  "plugins": [
+    {
+      "name": "dev-management",
+      "source": "./plugins/dev-management",
+      "description": "管理ルール（project-rules）、解説文書の Skill（explainer 系・research 系）、実装担当サブエージェント"
+    }
+  ]
+}
