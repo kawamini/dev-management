@@ -30,7 +30,7 @@ dev-management/
 
 ### claude.ai・Claude Desktop・Cowork
 
-1. **Customize > Plugins > Add > Add marketplace** で、このリポジトリ（`<owner>/dev-management`）を登録する
+1. **Customize > Plugins > Add > Add marketplace** で、このリポジトリ（`kawamini/dev-management`）を登録する
 2. 登録したマーケットプレイスで **Sync automatically** を有効にする
 3. `dev-management` プラグインを追加する
 
@@ -41,7 +41,7 @@ dev-management/
 ### Claude Code（claude.ai とは別のアカウントで使う場合）
 
 ```bash
-claude plugin marketplace add <owner>/dev-management
+claude plugin marketplace add kawamini/dev-management
 claude plugin install dev-management@dev-management
 ```
 
@@ -56,7 +56,7 @@ Copilot はプラグインの目録を使わず、Skill を個人用フォルダ
 Linux / macOS:
 
 ```bash
-git clone https://github.com/<owner>/dev-management.git ~/dev-management
+git clone https://github.com/kawamini/dev-management.git ~/dev-management
 mkdir -p ~/.copilot/skills
 cp -r ~/dev-management/plugins/dev-management/skills/* ~/.copilot/skills/
 ```
@@ -64,7 +64,7 @@ cp -r ~/dev-management/plugins/dev-management/skills/* ~/.copilot/skills/
 Windows（PowerShell）:
 
 ```powershell
-git clone https://github.com/<owner>/dev-management.git $HOME\dev-management
+git clone https://github.com/kawamini/dev-management.git $HOME\dev-management
 New-Item -ItemType Directory -Force $HOME\.copilot\skills | Out-Null
 Copy-Item -Recurse -Force $HOME\dev-management\plugins\dev-management\skills\* $HOME\.copilot\skills\
 ```
