@@ -1,0 +1,11 @@
+# ノードの成果物（ログ、チェックポイント、動画など）は追跡しない
+trials/*/outputs/
+
+# 学習済み重み
+*.ckpt
+*.pt
+*.safetensors
+
+# Python
+__pycache__/
+.venv/
