@@ -8,7 +8,7 @@
 ## 管理ルール
 
 このプロジェクトは `project-rules` Skill（dev-management）に従う。
-Skill が使えない環境では、https://github.com/kawamini/dev-management の `plugins/dev-management/skills/project-rules/SKILL.md` を読む。
+Skill が使えない環境では、https://github.com/kawamini/dev-management の `plugins/dev-management/skills/project-rules/SKILL.md` を読み、この環境に Skill が導入されていないことをユーザーに1回伝える。
 
 常に守ること：
 

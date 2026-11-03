@@ -34,7 +34,9 @@ dev-management/
 2. 登録したマーケットプレイスで **Sync automatically** を有効にする
 3. `dev-management` プラグインを追加する
 
-追加したプラグインはアカウントに保存され、同じアカウントでサインインした Claude Code でも使える。以前に個別に登録した explainer 系・research 系の Skill やプラグインがある場合は、同じ Skill が二重に読み込まれないよう無効にする。
+追加したプラグインはアカウントに保存され、同じアカウントでサインインした Claude Code でも使える。
+
+以前に explainer 系・research 系の Skill を1つずつアップロードしていた場合は、プラグインの Skill（`dev-management:explainer-style` など）が一覧に出たことを確かめてから、アップロードした方をオフにする（削除ではなく、Skill の一覧の切り替えで無効にする）。両方が有効だと同じ Skill が2つ並び、どちらが読み込まれるか決まらないうえ、アップロードした方はプラグインを更新しても古いまま残る。先にオフにすると、プラグインが入るまでの間は Skill が1つも効かなくなる。
 
 参考: [Plugins（claude.ai / Cowork）](https://claude.com/docs/plugins/overview)
 
@@ -49,27 +51,47 @@ Skill は `/dev-management:project-rules` のように、プラグイン名を�
 
 参考: [Claude Code: Plugins overview](https://code.claude.com/docs/en/plugins)
 
-### GitHub Copilot（VS Code）
+### GitHub Copilot（VS Code）・OpenAI Codex
 
-Copilot はプラグインの目録を使わず、Skill を個人用フォルダ `~/.copilot/skills/` から読む。リポジトリを clone して、`skills/` 以下をそこへコピーする。
+Copilot と Codex はプラグインの目録を使わず、Skill を個人用フォルダから読む。`~/.agents/skills/` は両方が読む場所なので、ここに置けば1か所で済む。Copilot の中で GPT や Claude などモデルを切り替えても、Skill と `AGENTS.md` を読み込むのは Copilot なので、同じように届く。
+
+リポジトリを clone し、各 Skill のフォルダへのリンク（Linux・macOS はシンボリックリンク、Windows はジャンクション）を `~/.agents/skills/` に置く。コピーではなくリンクにするのは、`git pull` だけで更新が届くようにするためである。
 
 Linux / macOS:
 
 ```bash
 git clone https://github.com/kawamini/dev-management.git ~/dev-management
-mkdir -p ~/.copilot/skills
-cp -r ~/dev-management/plugins/dev-management/skills/* ~/.copilot/skills/
+mkdir -p ~/.agents/skills
+for d in ~/dev-management/plugins/dev-management/skills/*/; do
+  ln -sfn "${d%/}" ~/.agents/skills/"$(basename "$d")"
+done
 ```
 
-Windows（PowerShell）:
+Windows（PowerShell。ジャンクションは管理者権限なしで作れる）:
 
 ```powershell
 git clone https://github.com/kawamini/dev-management.git $HOME\dev-management
-New-Item -ItemType Directory -Force $HOME\.copilot\skills | Out-Null
-Copy-Item -Recurse -Force $HOME\dev-management\plugins\dev-management\skills\* $HOME\.copilot\skills\
+New-Item -ItemType Directory -Force $HOME\.agents\skills | Out-Null
+Get-ChildItem -Directory $HOME\dev-management\plugins\dev-management\skills | ForEach-Object {
+  $link = Join-Path $HOME\.agents\skills $_.Name
+  if (-not (Test-Path $link)) { New-Item -ItemType Junction -Path $link -Target $_.FullName | Out-Null }
+}
 ```
 
-参考: [VS Code: Agent Skills](https://code.visualstudio.com/docs/agent-customization/agent-skills)
+更新は `git -C ~/dev-management pull` だけでよい。Skill を新しく足したときは、上のリンクの作成をもう一度実行する。リンクのままで Skill が読み込まれない場合は、リンクの代わりに各フォルダをコピーする（その場合、更新のたびにコピーし直す）。
+
+Claude Code は `~/.agents/skills/` を読まないので、同じ PC でプラグインと併用しても Skill は二重にならない。
+
+参考: [VS Code: Agent Skills](https://code.visualstudio.com/docs/agent-customization/agent-skills)、[Codex: Build skills](https://learn.chatgpt.com/docs/build-skills)
+
+### 導入できたかを確かめる
+
+| 環境 | 確かめること |
+|---|---|
+| Claude Code | Skill の一覧に `dev-management:project-rules` があり、同じ名前の Skill が2つ並んでいない。サブエージェントの一覧（`/agents`）に `implementer` がある |
+| Copilot・Codex | `~/.agents/skills/` に Skill が並んでいて、チャットで project-rules を使う依頼をすると Skill として読み込まれる |
+
+導入されていない環境では、エージェントは `AGENTS.md` の指示に従って GitHub 上のファイルを直接読み、Skill が導入されていないことをユーザーに伝える（`project-rules` の7.1）。
 
 ## 新しいプロジェクトを始める
 

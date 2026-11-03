@@ -1,6 +1,6 @@
 ---
 name: project-rules
-description: "AI エージェントと進める開発・研究プロジェクトの管理ルール。Git のコミットの時機と対象、trials/ に置くノード（1回の探究＝背景・目的・方法・結果・知見）の書き方とノード間のつながり、trials/INDEX.md、記録の取り消し、新しいプロジェクトのひな形、複数プロジェクトの扱い、非公開サンプルの扱いを定める。プロジェクトに trials/ があるとき、AGENTS.md がこの Skill を指しているとき、実験・検証・環境構築を始める／実行する／結果を記録するとき、コミットするとき、新しいプロジェクトを作るときは必ず読む。発動しない場合＝解説文書を書くだけの依頼、雑談。"
+description: "AI エージェントと進める開発・研究プロジェクトの管理ルール。Git のコミットの時機と対象、trials/ に置くノード（1回の探究＝背景・目的・方法・結果・知見）の書き方とノード間のつながり、trials/INDEX.md、記録の取り消し、新しいプロジェクトのひな形と Skill の導入状態の確認、複数プロジェクトの扱い（つなぎ方・休止と終了）、非公開サンプルの扱いを定める。プロジェクトに trials/ があるとき、AGENTS.md がこの Skill を指しているとき、実験・検証・環境構築を始める／実行する／結果を記録するとき、コミットするとき、新しいプロジェクトを作るときは必ず読む。発動しない場合＝解説文書を書くだけの依頼、雑談。"
 ---
 
 # Project Rules — 開発・研究の管理ルール
@@ -200,7 +200,7 @@ runs:
 2. ユーザー向けの `report.md` を explainer 系 Skill に従って書く
 3. `trials/INDEX.md` を更新する
 4. ノードの記録を `exp` 種別でコミットする。1回の依頼でまとめて処理したノードは、1つのコミットにまとめる（まとめて取り消せるようにするため）
-5. `AGENTS.md` の目的に「（仮）」が付いていれば、目的を見直すかをユーザーに1回だけ尋ねる（7節）
+5. `AGENTS.md` の目的に「（仮）」が付いていれば、目的を見直すかをユーザーに1回だけ尋ねる（7.2）
 
 ## 6. 登録と取り消し
 
@@ -219,6 +219,18 @@ git tag -f kg-reviewed HEAD                             # ユーザーが確認�
 確認前のノードを親として使ってよい。後で親が invalid になっても、3.6 の手順で影響する子ノードを洗い出せる。
 
 ## 7. 新しいプロジェクトを作るとき
+
+### 7.1 この環境に Skill が導入されているかを確かめる
+
+新しいプロジェクトを作るとき、またはこのルールを Skill としてではなくファイルとして読んでいると気づいたときに行う。Skill が導入されていない環境では、依頼が Skill の説明に合ってもルールが読み込まれず、エージェントは `AGENTS.md` の数行だけで動くことになるからである。
+
+- 利用できる Skill の一覧に `project-rules`（Claude ではプラグイン名の付いた `dev-management:project-rules`）があるか。無ければ、この環境には dev-management が導入されていない。このルールは `AGENTS.md` の指示どおりファイルとして読んで従い、導入されていないことと、dev-management の README の「導入」のうち該当する節をユーザーに伝える
+- 同じ名前の Skill が2つ並んでいないか（例：`explainer-style` と `dev-management:explainer-style`）。並んでいれば、以前に個別に登録した方を無効にするよう伝える
+- Claude Code では、サブエージェントの一覧に `implementer` があるか
+
+伝えるのは、気づいたときに1回だけにする。claude.ai の設定などの導入作業はユーザーが行うので、エージェントは手順を示すにとどめる。Copilot・Codex 用のリンクの作成（README の該当する節）は、ユーザーが頼めばエージェントが実行してよい。
+
+### 7.2 ひな形を置く
 
 ユーザーが新しいプロジェクトを始める、またはこのルールを導入すると頼んだときに行う。起動しただけでは何もしない。
 
@@ -251,6 +263,18 @@ git tag -f kg-reviewed HEAD                             # ユーザーが確認�
 - 全プロジェクトの一覧を、プロジェクト群の親フォルダの `PROJECTS.md` に書く（名前・1行の目的・状態・依存しているプロジェクト）。ひな形は `templates/workspace/PROJECTS.md`
 - 他のプロジェクトから使われるプロジェクトは、`AGENTS.md` の「外に提供するもの」に、使い方を数行で書く。使う側のエージェントはそこだけ読めばよい
 - ノードは、その探究を行ったプロジェクトの `trials/` に置く
+
+### 8.1 必要になったときの手順
+
+次の手順は、ふだんは使わない。ユーザーが頼んだとき、または作業に必要になったときに行う。
+
+| したいこと | 方法 |
+|---|---|
+| 人が複数のプロジェクトを同時に開く | VS Code の multi-root workspace（複数のフォルダを1つのウィンドウで開く機能）を使う。`<名前>.code-workspace` に対象のフォルダを並べ、プロジェクト群の親フォルダに置く（[VS Code: Multi-root Workspaces](https://code.visualstudio.com/docs/editing/workspaces/multi-root-workspaces)） |
+| エージェントに別のプロジェクトを読ませる | Claude Code では `claude --add-dir ../<相手>` で起動する。相手の規約も読ませるときは、環境変数 `CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1` を付ける。このとき読まれるのは相手の `CLAUDE.md` で、`AGENTS.md` は直接は読まれないが、`CLAUDE.md` の `@AGENTS.md` を通して届く（[Claude Code: Memory](https://code.claude.com/docs/en/memory)「Load from additional directories」）。Copilot では、相手のフォルダを multi-root workspace に加える |
+| 別のプロジェクトの Python のコードを使う | 使う側で `uv add --editable ../<相手>` を実行する。パス指定の依存は、既定では editable（元のフォルダを直接参照し、相手の変更がすぐ反映される形）にならないので、`--editable` を付ける（[uv: Managing dependencies](https://docs.astral.sh/uv/concepts/projects/dependencies/)）。使う側のノードの `env` に `<相手> @ <コミット ID>` を書く |
+| 別のプロジェクトのノードを親にする | 3.4 のとおり、wikilink ではなくパスで書く（例：`isaaclab-env/trials/T004-camera-sensor`） |
+| プロジェクトを休止・終了する | `PROJECTS.md` の状態を `paused` / `archived` にする。フォルダを別の場所（例：親フォルダの `archive/`）に移すかはユーザーが決める。移す前に、他のプロジェクトのノードがパスで指していないかを `grep -rln "<名前>/trials" <親フォルダ>/*/trials/` で探し、見つかればユーザーに伝える。移したら、`PROJECTS.md` に移した先を書く。他のプロジェクトのノード本体の記述は書き換えない |
 
 ## 9. 管理体制のサンプル（非公開）
 
