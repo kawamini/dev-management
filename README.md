@@ -93,6 +93,35 @@ Claude Code は `~/.agents/skills/` を読まないので、同じ PC でプラ�
 
 導入されていない環境では、エージェントは `AGENTS.md` の指示に従って GitHub 上のファイルを直接読み、Skill が導入されていないことをユーザーに伝える（`project-rules` の7.1）。
 
+### dev-management-private を作る（デバイスごと）
+
+`dev-management-private` は、サンプルと文章改善ループの記録を置く非公開のリポジトリで、デバイスごとに別のものを作る。作業の内容は PC ごとに違うのが基本なので、デバイス間で共有せず、リモートも付けない。中身の無いひな形を `plugins/dev-management/skills/project-rules/templates/private/` に置いてあるので、新しい PC ではそこから作る。
+
+Linux / macOS:
+
+```bash
+# ① ひな形をコピーして、リモートの無い Git リポジトリにする（すでにある場合は何もしない）
+[ -e ~/dev-management-private ] || {
+  cp -r ~/dev-management/plugins/dev-management/skills/project-rules/templates/private ~/dev-management-private
+  git -C ~/dev-management-private init -q
+  git -C ~/dev-management-private add -A
+  git -C ~/dev-management-private commit -q -m "feat: ひな形から作る"
+}
+
+# ② Claude Code の個人設定から device-instructions.md を読み込ませる（同じ行が無いときだけ足す）
+mkdir -p ~/.claude
+line='@~/dev-management-private/device-instructions.md'
+grep -qxF "$line" ~/.claude/CLAUDE.md 2>/dev/null || echo "$line" >> ~/.claude/CLAUDE.md
+```
+
+- ①：置き場所は `~/dev-management-private/` に固定する。公開側の Skill と `device-instructions.md` が、この場所を前提に参照するため
+- ②：`~/.claude/CLAUDE.md` は、Claude Code が全プロジェクトで毎回読む個人設定である。`device-instructions.md` には、文章改善ループの入口が書いてある。Skill の本文は依頼が説明文に合ったときにしか読まれないが、ここに書いたことは毎回届く。既存の `~/.claude/CLAUDE.md` は上書きせず、行を足すだけにしている
+- 効くのは、次に Claude Code を起動したセッションから
+- Copilot・Codex の個人設定から読み込ませる方法は、使い始めるときに確かめて書き足す
+- ひな形は、公開側を `pull` しても、作った後の `dev-management-private` には反映されない。ひな形が変わったときは、差分を見て手で取り込む
+
+Windows では、①はエクスプローラーか `Copy-Item -Recurse` でコピーして同じ Git の操作を行う。②の `@~/...` の書き方が Windows の Claude Code で使えるかは確かめていない。
+
 ## 新しいプロジェクトを始める
 
 `plugins/dev-management/skills/project-rules/templates/project/` の中身をプロジェクトのルートにコピーし、`AGENTS.md` の冒頭を埋める。詳しくは `project-rules/SKILL.md` の「新しいプロジェクトを作るとき」。

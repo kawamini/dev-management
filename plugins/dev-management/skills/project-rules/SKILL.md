@@ -190,9 +190,19 @@ runs:
 
 ### 実行するとき
 
-1. 2.1 の実行前コミットを行い、frontmatter の再現情報を埋める
-2. status を `running` にする
-3. 成果物は `outputs/` に出す
+1. 誰が実装・実行するかをユーザーに尋ねる（下の「実装の担当を尋ねる」）
+2. 2.1 の実行前コミットを行い、frontmatter の再現情報を埋める
+3. status を `running` にする
+4. 成果物は `outputs/` に出す
+
+#### 実装の担当を尋ねる
+
+`instructions.md` ができて実装・実行に入る前に、この会話で行うか、実装担当のサブエージェントに任せるかを、ユーザーに1回尋ねる。尋ねるときは、この環境で使えるものを、使えないものも含めて示す。サブエージェントが使えるかどうかは環境によって違うため、エージェントが黙って選ぶと、ユーザーからはそれが動いたのかどうかが見えないからである。
+
+- Claude Code：プラグインの `implementer`（モデルは定義の `model` に従う。10節）が使える。使えない場合（サブエージェントの一覧に無い場合）は、そのことを伝える
+- Copilot など、`implementer` を置いていない環境：サブエージェントは使えないことを伝える。選べるのは、この会話で行うか、ユーザーがモデルを選んだ別の会話に `instructions.md` を渡すかである
+
+ユーザーが選んだ担当と、使ったモデルを、ノード本体の結果節に1行書く。
 
 ### 結果が出たら
 
@@ -278,7 +288,7 @@ git tag -f kg-reviewed HEAD                             # ユーザーが確認�
 
 ## 9. 非公開リポジトリ（サンプルと文章改善ループ）
 
-`~/dev-management-private/samples/` に、過去のプロジェクトで採った構造と、標準のルールから変えた点・その理由がある。非公開リポジトリなので、無い環境もある。
+`~/dev-management-private/samples/` に、過去のプロジェクトで採った構造と、標準のルールから変えた点・その理由がある。このリポジトリはデバイスごとに別のものを作り、共有しない。まだ作っていないデバイスもある。作り方と中身の無いひな形は、`templates/private/` と dev-management の README「dev-management-private を作る」にある。ユーザーが作ると頼んだときは、その手順で作る。
 
 - この管理ルール自体の改善を議論するときは、ここを読んで材料にする
 - 新しいプロジェクトの構造を決めるときは、似た種類のサンプルがあれば参考として示す
@@ -288,9 +298,9 @@ git tag -f kg-reviewed HEAD                             # ユーザーが確認�
 
 ## 10. Claude Code を使う場合
 
-ここは Claude Code 固有の仕組みで、他の環境では使わない。
+ここは Claude Code 固有の仕組みで、他の環境では使わない。Copilot など他の環境には、実装担当のサブエージェントを置かない。
 
-- **実装担当のサブエージェント**：プラグインの `agents/implementer.md`。ノードの `instructions.md`（ひな形 `templates/node/instructions.md`）に従って実装・実行する。設計と指示書の作成はメインの会話で行い、実装と実行をこの担当に任せる（[Claude Code: Subagents](https://code.claude.com/docs/en/subagents)）
+- **実装担当のサブエージェント**：プラグインの `agents/implementer.md`（`model: sonnet`）。ノードの `instructions.md`（ひな形 `templates/node/instructions.md`）に従って実装・実行する。設計と指示書の作成はメインの会話で行い、実装と実行をこの担当に任せる（[Claude Code: Subagents](https://code.claude.com/docs/en/subagents)）。使うかどうかは、5節「実装の担当を尋ねる」でユーザーに尋ねてから決める
 - **実行前コミットを強制したい場合**：hooks で、実行コマンドの前に `git status --porcelain` を検査して止めることができる（[Claude Code: Hooks](https://code.claude.com/docs/en/hooks)）
 
 ## 11. してはいけないこと
