@@ -97,6 +97,16 @@ Claude Code は `~/.agents/skills/` を読まないので、同じ PC でプラ�
 
 `dev-management-private` は、サンプルと文章改善ループの記録を置く非公開のリポジトリで、デバイスごとに別のものを作る。作業の内容は PC ごとに違うのが基本なので、デバイス間で共有せず、リモートも付けない。中身の無いひな形を `plugins/dev-management/skills/project-rules/templates/private/` に置いてあるので、新しい PC ではそこから作る。
 
+作るのは ① で、そのあと、その PC で使うエージェントに合わせて ② か ③（両方使うなら両方）を行う。
+
+| 手順 | すること | 対象 |
+|---|---|---|
+| ① | ひな形をコピーして、リモートの無い Git リポジトリにする | すべての PC |
+| ② | Claude Code の個人設定 `~/.claude/CLAUDE.md` に、`device-instructions.md` を読み込む1行を足す | Claude Code を使う PC |
+| ③ | Copilot の個人設定 `~/.copilot/copilot-instructions.md` に、`device-instructions.md` の中身を書き足す | GitHub Copilot を使う PC |
+
+`device-instructions.md` には、文章改善ループの入口（記録を指示されたら `writing-loop/README.md` に従う、など）が書いてある。Skill の本文は依頼が説明文に合ったときにしか読まれないが、個人設定は毎回読まれるので、ここに書いたことは毎回届く。②と③のどちらも、既存の個人設定は上書きせず、書き足すだけにしている。2回実行しても重ならない。
+
 Linux / macOS:
 
 ```bash
@@ -108,19 +118,49 @@ Linux / macOS:
   git -C ~/dev-management-private commit -q -m "feat: ひな形から作る"
 }
 
-# ② Claude Code の個人設定から device-instructions.md を読み込ませる（同じ行が無いときだけ足す）
+# ② Claude Code：読み込みの1行を足す（同じ行が無いときだけ）
 mkdir -p ~/.claude
 line='@~/dev-management-private/device-instructions.md'
 grep -qxF "$line" ~/.claude/CLAUDE.md 2>/dev/null || echo "$line" >> ~/.claude/CLAUDE.md
+
+# ③ Copilot：中身を目印つきで書き足す（目印が無いときだけ）
+f=~/.copilot/copilot-instructions.md
+mkdir -p ~/.copilot
+grep -qF 'dev-management-private:start' "$f" 2>/dev/null || {
+  printf '\n<!-- dev-management-private:start -->\n'
+  cat ~/dev-management-private/device-instructions.md
+  printf '<!-- dev-management-private:end -->\n'
+} >> "$f"
+```
+
+Windows（PowerShell）:
+
+```powershell
+# ① ひな形をコピーして、リモートの無い Git リポジトリにする（すでにある場合は何もしない）
+$p = "$HOME\dev-management-private"
+if (-not (Test-Path $p)) {
+  Copy-Item -Recurse "$HOME\dev-management\plugins\dev-management\skills\project-rules\templates\private" $p
+  git -C $p init -q
+  git -C $p add -A
+  git -C $p commit -q -m "feat: ひな形から作る"
+}
+
+# ③ Copilot：中身を目印つきで書き足す（目印が無いときだけ）
+$f = "$HOME\.copilot\copilot-instructions.md"
+New-Item -ItemType Directory -Force (Split-Path $f) | Out-Null
+if (-not ((Test-Path $f) -and (Select-String -Path $f -SimpleMatch 'dev-management-private:start' -Quiet))) {
+  $src = Get-Content -Raw -Encoding utf8 "$p\device-instructions.md"
+  Add-Content -Path $f -Encoding utf8 -Value "`n<!-- dev-management-private:start -->`n$src<!-- dev-management-private:end -->"
+}
 ```
 
 - ①：置き場所は `~/dev-management-private/` に固定する。公開側の Skill と `device-instructions.md` が、この場所を前提に参照するため
-- ②：`~/.claude/CLAUDE.md` は、Claude Code が全プロジェクトで毎回読む個人設定である。`device-instructions.md` には、文章改善ループの入口が書いてある。Skill の本文は依頼が説明文に合ったときにしか読まれないが、ここに書いたことは毎回届く。既存の `~/.claude/CLAUDE.md` は上書きせず、行を足すだけにしている
-- 効くのは、次に Claude Code を起動したセッションから
-- Copilot・Codex の個人設定から読み込ませる方法は、使い始めるときに確かめて書き足す
+- ②：Claude Code は `@` で別のファイルを読み込めるので、1行だけ書く。`device-instructions.md` を直せば、そのまま反映される。効くのは、次に Claude Code を起動したセッションから（[Claude Code: Memory](https://code.claude.com/docs/en/memory)）
+- ③：Copilot の個人設定には、`@` で別のファイルを読み込む書き方が無いので、中身をそのまま書き足す（[VS Code: Custom instructions](https://code.visualstudio.com/docs/agent-customization/custom-instructions)）。そのため `device-instructions.md` を直したときは、`<!-- dev-management-private:start -->` から `end` までを消して③を実行し直す。会社の PC などで、すでに個人設定に別の指示が書いてあっても、そのまま残る
+- ③が実際に毎回読まれているかは、Copilot のチャットで「個人設定の指示に何が書いてあるか」を尋ねて確かめる（⚠️ 未検証：この PC には Copilot が無いので試していない）。Copilot のエージェントが、ワークスペースの外にある `~/dev-management-private/` のファイルを読むときは、確認を求められることがある
+- Windows の②（`@~/...` の書き方が Windows の Claude Code で使えるか）は確かめていない
+- Codex の個人設定は、使い始めるときに確かめて書き足す
 - ひな形は、公開側を `pull` しても、作った後の `dev-management-private` には反映されない。ひな形が変わったときは、差分を見て手で取り込む
-
-Windows では、①はエクスプローラーか `Copy-Item -Recurse` でコピーして同じ Git の操作を行う。②の `@~/...` の書き方が Windows の Claude Code で使えるかは確かめていない。
 
 ## 新しいプロジェクトを始める
 
