@@ -2,7 +2,7 @@
 
 AI エージェントと一緒に進める開発・研究（シミュレータ環境の構築、モデルの学習・検証、認識アルゴリズムの検証など）を、後から人も AI も辿れる形で管理するためのルールと Skill 集。
 
-このリポジトリは公開リポジトリである。**会社や特定のプロジェクトの情報は置かない。** プロジェクトのサンプルや文章改善の記録は、別の非公開リポジトリ（`dev-management-private`）に置く。
+このリポジトリは公開リポジトリである。**会社や特定のプロジェクトの情報は置かない。** プロジェクトのサンプル、文章改善の事例集、読み手に合わせた辞書は、別の非公開リポジトリ（`dev-management-private`）に置く。
 
 ## 中身
 
@@ -93,30 +93,26 @@ Claude Code は `~/.agents/skills/` を読まないので、同じ PC でプラ�
 
 導入されていない環境では、エージェントは `AGENTS.md` の指示に従って GitHub 上のファイルを直接読み、Skill が導入されていないことをユーザーに伝える（`project-rules` の7.1）。
 
-### dev-management-private を作る（デバイスごと）
+### dev-management-private を作る
 
-`dev-management-private` は、サンプルと文章改善ループの記録を置く非公開のリポジトリで、デバイスごとに別のものを作る。作業の内容は PC ごとに違うのが基本なので、デバイス間で共有せず、リモートも付けない。中身の無いひな形を `plugins/dev-management/skills/project-rules/templates/private/` に置いてあるので、新しい PC ではそこから作る。
+`dev-management-private` は、サンプル・文章改善の事例集・表現の辞書・概念の辞書を置く非公開のリポジトリで、GitHub の非公開リポジトリを通して PC 間で共有する。事例集と辞書は、どの PC のエージェントも同じものを読む必要があるため。**push してよいのはユーザーが許可した PC だけ**で、会社の PC など企業の情報が漏れる恐れのある PC からは push しない（pull して使う）。許可したかどうかはシステムには定義されていないので、エージェントは自分からは push しない。中身の無いひな形を `plugins/dev-management/skills/project-rules/templates/private/` に置いてある。最初の1台はそこから作って GitHub の非公開リポジトリに push し、2台目以降はそれを clone する。
 
 作るのは ① で、そのあと、その PC で使うエージェントに合わせて ② か ③（両方使うなら両方）を行う。
 
 | 手順 | すること | 対象 |
 |---|---|---|
-| ① | ひな形をコピーして、リモートの無い Git リポジトリにする | すべての PC |
+| ① | 最初の1台：ひな形をコピーして Git リポジトリにし、GitHub の非公開リポジトリをリモートにする。2台目以降：clone する | すべての PC |
 | ② | Claude Code の個人設定 `~/.claude/CLAUDE.md` に、`device-instructions.md` を読み込む1行を足す | Claude Code を使う PC |
 | ③ | Copilot の個人設定 `~/.copilot/copilot-instructions.md` に、`device-instructions.md` の中身を書き足す | GitHub Copilot を使う PC |
 
-`device-instructions.md` には、文章改善ループの入口（記録を指示されたら `writing-loop/README.md` に従う、など）が書いてある。Skill の本文は依頼が説明文に合ったときにしか読まれないが、個人設定は毎回読まれるので、ここに書いたことは毎回届く。②と③のどちらも、既存の個人設定は上書きせず、書き足すだけにしている。2回実行しても重ならない。
+`device-instructions.md` には、文章改善ループと辞書の入口（止まった質問を受けたら `writing-loop/README.md` に従う、説明を書く前に辞書を引く、など）が書いてある。Skill の本文は依頼が説明文に合ったときにしか読まれないが、個人設定は毎回読まれるので、ここに書いたことは毎回届く。②と③のどちらも、既存の個人設定は上書きせず、書き足すだけにしている。2回実行しても重ならない。
 
 Linux / macOS:
 
 ```bash
-# ① ひな形をコピーして、リモートの無い Git リポジトリにする（すでにある場合は何もしない）
-[ -e ~/dev-management-private ] || {
-  cp -r ~/dev-management/plugins/dev-management/skills/project-rules/templates/private ~/dev-management-private
-  git -C ~/dev-management-private init -q
-  git -C ~/dev-management-private add -A
-  git -C ~/dev-management-private commit -q -m "feat: ひな形から作る"
-}
+# ① 2台目以降：非公開リポジトリを clone する（すでにある場合は何もしない）
+#    <URL> は GitHub の非公開リポジトリ。最初の1台は、ひな形をコピーして git init し、remote add して push する
+[ -e ~/dev-management-private ] || git clone <URL> ~/dev-management-private
 
 # ② Claude Code：読み込みの1行を足す（同じ行が無いときだけ）
 mkdir -p ~/.claude
@@ -136,14 +132,9 @@ grep -qF 'dev-management-private:start' "$f" 2>/dev/null || {
 Windows（PowerShell）:
 
 ```powershell
-# ① ひな形をコピーして、リモートの無い Git リポジトリにする（すでにある場合は何もしない）
+# ① 2台目以降：非公開リポジトリを clone する（すでにある場合は何もしない）
 $p = "$HOME\dev-management-private"
-if (-not (Test-Path $p)) {
-  Copy-Item -Recurse "$HOME\dev-management\plugins\dev-management\skills\project-rules\templates\private" $p
-  git -C $p init -q
-  git -C $p add -A
-  git -C $p commit -q -m "feat: ひな形から作る"
-}
+if (-not (Test-Path $p)) { git clone <URL> $p }
 
 # ③ Copilot：中身を目印つきで書き足す（目印が無いときだけ）
 $f = "$HOME\.copilot\copilot-instructions.md"
@@ -161,6 +152,7 @@ if (-not ((Test-Path $f) -and (Select-String -Path $f -SimpleMatch 'dev-manageme
 - Windows の②（`@~/...` の書き方が Windows の Claude Code で使えるか）は確かめていない
 - Codex の個人設定は、使い始めるときに確かめて書き足す
 - ひな形は、公開側を `pull` しても、作った後の `dev-management-private` には反映されない。ひな形が変わったときは、差分を見て手で取り込む
+- 会社の PC など push しない PC では、pull だけして使う。push しない PC で事例や辞書を足したときは、その PC ではコミットまでにとどめる
 
 ## 新しいプロジェクトを始める
 
