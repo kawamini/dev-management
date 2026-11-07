@@ -152,7 +152,7 @@ if (-not ((Test-Path $f) -and (Select-String -Path $f -SimpleMatch 'dev-manageme
 - Windows の②（`@~/...` の書き方が Windows の Claude Code で使えるか）は確かめていない
 - Codex の個人設定は、使い始めるときに確かめて書き足す
 - ひな形は、公開側を `pull` しても、作った後の `dev-management-private` には反映されない。ひな形が変わったときは、差分を見て手で取り込む
-- 会社の PC など push しない PC では、pull だけして使う。push しない PC で事例や辞書を足したときは、その PC ではコミットまでにとどめる
+- 会社の PC など push しない PC は、**読むだけ**にする（事例集・辞書に足さない）。①の clone には、このリポジトリだけを読める fine-grained トークン（GitHub の Settings → Developer settings → Fine-grained tokens。Repository access はこのリポジトリだけ、Permissions は Contents の Read-only）を使う。アカウント全体の権限を置かずに済み、push も仕組みとして失敗する。clone のあと `touch ~/dev-management-private/.read-only` で印を置く。エージェントはこの印の有無で、事例集・辞書に足すかを判断する。個人アカウントのトークンを会社の PC に置いてよいかは、会社の規程に従う
 
 ## 新しいプロジェクトを始める
 
