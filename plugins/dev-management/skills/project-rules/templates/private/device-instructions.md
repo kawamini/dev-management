@@ -3,7 +3,7 @@
 このファイルは、各デバイスのエージェントの個人設定から読み込まれ、どのプロジェクトの会話でも毎回読まれる。短く保つ。
 
 - 説明を書く前（チャットの回答・解説文書のどちらも）に、登場する語を `~/dev-management-private/dictionary/` で引き、項目があればその説明の言い回しを使う。`不要` の印が付いた語には、括弧の説明（「VLA（〜するモデル）」のような）を付けない。あわせて `~/dev-management-private/writing-loop/expressions.md` に載った表現を使わない
-- 説明を書く前に `~/dev-management-private/writing-loop/lessons.md`（教訓）を通して読み、当てはまる場面ではそれに従う。Skill の原則にある「`records/` のうち『原則：N』の記録を読む」は、教訓のうち原則 N のものを読み、必要ならそこから事例へ辿る、と読み替える
+- 説明を書く前に `~/dev-management-private/writing-loop/lessons.md`（教訓）を通して読み、当てはまる場面ではそれに従う
 - 読み手が文書や回答を読んで止まった質問・指摘を受けたら、`~/dev-management-private/writing-loop/README.md` の手順に従う（意図を確認 → 回答 → 直し方を提案 → 合意したら直して、事例集か表現の辞書に残し、教訓に当てはめる）
 - 知らない概念の解説を求められて答えたら、概念の辞書に登録するかを尋ねる。登録は合意したときだけ。手順は `~/dev-management-private/dictionary/README.md`
 - 事例集・表現の辞書・概念の辞書は、作業中のプロジェクトではなく `~/dev-management-private` に置いてコミットする。push はユーザーが指示したときだけ行う

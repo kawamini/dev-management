@@ -14,13 +14,9 @@ dev-management/
     ├── skills/
     │   ├── project-rules/              管理ルール（Git、trials/ のノード、INDEX、複数プロジェクト）
     │   │   └── templates/              新しいプロジェクトとノードのひな形
-    │   ├── explainer-style/            解説文書の書き方（文章）
-    │   ├── explainer-citation/         解説文書の書き方（出典）
-    │   ├── explainer-structure/        解説文書の書き方（構成）
-    │   ├── explainer-review/           解説文書を出す前の検査
-    │   ├── research-explainer-style/   研究解説の書き方（文章）
-    │   ├── research-citation/          研究解説の書き方（出典）
-    │   └── research-structure/         研究解説の書き方（構成）
+    │   ├── research-explainer-style/   解説の書き方（文章。論文の解説にも技術の質問への回答にも使う。出力前の読み返しを含む）
+    │   ├── research-citation/          解説の書き方（出典）
+    │   └── research-structure/         解説の書き方（構成。既定は1ファイル）
     └── agents/implementer.md           Claude Code 用の実装担当サブエージェント
 ```
 
@@ -36,7 +32,7 @@ dev-management/
 
 追加したプラグインはアカウントに保存され、同じアカウントでサインインした Claude Code でも使える。
 
-以前に explainer 系・research 系の Skill を1つずつアップロードしていた場合は、プラグインの Skill（`dev-management:explainer-style` など）が一覧に出たことを確かめてから、アップロードした方をオフにする（削除ではなく、Skill の一覧の切り替えで無効にする）。両方が有効だと同じ Skill が2つ並び、どちらが読み込まれるか決まらないうえ、アップロードした方はプラグインを更新しても古いまま残る。先にオフにすると、プラグインが入るまでの間は Skill が1つも効かなくなる。
+以前に explainer 系・research 系の Skill を1つずつアップロードしていた場合は、プラグインの Skill（`dev-management:research-explainer-style` など）が一覧に出たことを確かめてから、アップロードした方をオフにする（削除ではなく、Skill の一覧の切り替えで無効にする）。両方が有効だと同じ Skill が2つ並び、どちらが読み込まれるか決まらないうえ、アップロードした方はプラグインを更新しても古いまま残る。先にオフにすると、プラグインが入るまでの間は Skill が1つも効かなくなる。
 
 参考: [Plugins（claude.ai / Cowork）](https://claude.com/docs/plugins/overview)
 
@@ -78,7 +74,7 @@ Get-ChildItem -Directory $HOME\dev-management\plugins\dev-management\skills | Fo
 }
 ```
 
-更新は `git -C ~/dev-management pull` だけでよい。Skill を新しく足したときは、上のリンクの作成をもう一度実行する。リンクのままで Skill が読み込まれない場合は、リンクの代わりに各フォルダをコピーする（その場合、更新のたびにコピーし直す）。
+更新は `git -C ~/dev-management pull` だけでよい。Skill を新しく足したときは、上のリンクの作成をもう一度実行する。Skill を消したときは、`~/.agents/skills/` に残ったリンクも消す（0.9.0 で explainer-style・explainer-citation・explainer-structure・explainer-review を消した）。リンクのままで Skill が読み込まれない場合は、リンクの代わりに各フォルダをコピーする（その場合、更新のたびにコピーし直す）。
 
 Claude Code は `~/.agents/skills/` を読まないので、同じ PC でプラグインと併用しても Skill は二重にならない。
 

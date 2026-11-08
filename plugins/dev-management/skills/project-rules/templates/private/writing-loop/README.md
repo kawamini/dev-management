@@ -98,10 +98,8 @@ writing-loop/
 | 置き場所 | 書いてあること | 読み込まれるとき |
 |---|---|---|
 | `../device-instructions.md`（個人設定から読み込む） | 止まった質問を受けたらこの README に従う、書く前に辞書と教訓を引く | 毎回（どのプロジェクトの会話でも） |
-| research-explainer-style の原則3・原則9 | 辞書と事例集の場所、この手順への入口 | 説明を書くとき、指摘を受けたとき |
+| research-explainer-style の参照データの表・各原則の「教訓」の行・原則9 | 辞書・教訓・事例集の場所、この手順への入口。各原則は「`lessons.md` のうち『原則：N』の教訓を読む」と参照する | 説明を書くとき、指摘を受けたとき |
 | project-rules の9節 | このリポジトリに `writing-loop/` と `dictionary/` があること | プロジェクトの作業で project-rules が読み込まれたとき |
-
-research-explainer-style の各原則には「`records/` のうち『原則：N』の記録を読む」と書いてあるが、事例には「原則」の欄が無くなり、原則は教訓の側に書くようにした。Skill を改訂するまでは、この1行を「`lessons.md` のうち原則 N の教訓を読み、必要ならそこから事例へ辿る」と読み替える（`../device-instructions.md` にも書いてある）。
 
 ## 8. 置き場とコミット
 

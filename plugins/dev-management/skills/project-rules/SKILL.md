@@ -235,7 +235,7 @@ git tag -f kg-reviewed HEAD                             # ユーザーが確認�
 新しいプロジェクトを作るとき、またはこのルールを Skill としてではなくファイルとして読んでいると気づいたときに行う。Skill が導入されていない環境では、依頼が Skill の説明に合ってもルールが読み込まれず、エージェントは `AGENTS.md` の数行だけで動くことになるからである。
 
 - 利用できる Skill の一覧に `project-rules`（Claude ではプラグイン名の付いた `dev-management:project-rules`）があるか。無ければ、この環境には dev-management が導入されていない。このルールは `AGENTS.md` の指示どおりファイルとして読んで従い、導入されていないことと、dev-management の README の「導入」のうち該当する節をユーザーに伝える
-- 同じ名前の Skill が2つ並んでいないか（例：`explainer-style` と `dev-management:explainer-style`）。並んでいれば、以前に個別に登録した方を無効にするよう伝える
+- 同じ名前の Skill が2つ並んでいないか（例：`research-explainer-style` と `dev-management:research-explainer-style`）。並んでいれば、以前に個別に登録した方を無効にするよう伝える
 - Claude Code では、サブエージェントの一覧に `implementer` があるか
 
 伝えるのは、気づいたときに1回だけにする。claude.ai の設定などの導入作業はユーザーが行うので、エージェントは手順を示すにとどめる。Copilot・Codex 用のリンクの作成（README の該当する節）は、ユーザーが頼めばエージェントが実行してよい。
