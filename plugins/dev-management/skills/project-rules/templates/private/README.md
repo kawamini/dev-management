@@ -8,7 +8,7 @@
 dev-management-private/
 ├── device-instructions.md   このデバイスで常に守ること（エージェントの個人設定から読み込む）
 ├── samples/                 各プロジェクトで採った構造と、標準のルールから変えた点・その理由
-├── writing-loop/            文章改善ループ（事例集 records/ と表現の辞書 expressions.md）
+├── writing-loop/            文章改善ループ（教訓 lessons.md・事例集 records/・表現の辞書 expressions.md）
 └── dictionary/              概念の辞書（読み手が理解した言葉での説明）
 ```
 
